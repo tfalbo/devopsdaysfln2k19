@@ -8,7 +8,7 @@
 
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+		<link rel="stylesheet" href="css/theme/night.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/monokai.css">
@@ -25,8 +25,63 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section data-markdown>
+					## Migração de Logs do LogEntries para o Stackdriver
+					Thaíssa Falbo
+
+					SRE - Resultados Digitais
+
+					Slides com notas disponíveis em www.inserirlinkaqui.com
+				</section>
+				<section>
+					<img data-src="img/time.jpg" alt="Na foto há 12 pessoas (4 mulheres e 8 homens) de pé brindando com champagne dentro de um escritório."/>
+				</section>
+				<section data-markdown>
+					## Situação anterior
+					* LogEntries com limite de 4 Teras que sempre estourava no fim do mês
+					* Aplicações fora do kubernetes que logavam hard-coded
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit »S« on your keyboard).
+					</aside>
+				</section>
+				<section data-markdown>
+					## Consolidação da Cloud
+					* Listar serviços externos que usávamos
+					* Consolidamos a infra na Google Cloud
+					* Algumas aplicações ainda estavam no Heroku e AWS
+				</section>
+				<section data-markdown>
+					## Arquitetura com Kubernetes
+					* FluentD customizado ocupando um namespace do cluster
+					* Plugin LogEntries
+					* Plugin Google Stackdriver adicionado, mantendo dois destinos
+					<aside class="notes">
+						Não usamos a FluentD da Google para poder ser mais customizável.
+					</aside>
+				</section>
+				<section data-markdown>
+					## Primeiro obstáculo: drop de logs
+					* Passamos o conhecimento para o suporte N2 e N3, percebemos o drop de logs
+					* Suporte da Google foi acionado tardiamente
+					* Corrigimos o drop com o buffer, mas precisamos de ajustes finos
+				</section>
+				<section data-markdown>
+					## Segundo obstáculo: encerramento do LogEntries
+					* A conta do LogEntries foi encerrada antes do previsto, porém o Stackdriver segurou a demanda
+					* Precisamos ajudar os devs e o suporte n2 e n3
+				</section>
+				<section data-markdown>
+					### Aprendizados
+					* Envolver usuários o mais cedo possível
+					* Acionar suporte o mais cedo possível
+				</section>
+				<section data-markdown>
+					### Vantagens: redução de custo
+					* Conseguimos reduzir em 1/3 o custo de ingestão de logs.
+				</section>
+				<section data-markdown>
+					### Slide Final
+				</section>
 			</div>
 		</div>
 
