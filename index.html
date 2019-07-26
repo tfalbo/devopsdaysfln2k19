@@ -41,9 +41,7 @@
 					* LogEntries com limite de 4Tb que sempre estourava no fim do mês
 					* Aplicações fora do kubernetes que logavam hard-coded
 					* Logs quebrados excediam o limite da quota
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit »S« on your keyboard).
-					</aside>
+					Note: Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit »S« on your keyboard).
 				</section>
 				<section data-markdown>
 					## Consolidação da Cloud
@@ -56,9 +54,7 @@
 					* FluentD customizado ocupando um namespace do cluster
 					* Plugin LogEntries
 					* Plugin Google Stackdriver adicionado, mantendo dois destinos
-					<aside class="notes">
-						Não usamos a FluentD da Google para poder ser mais customizável.
-					</aside>
+					Note: Não usamos a FluentD da Google para poder ser mais customizável.
 				</section>
 				<section data-markdown>
 					## Primeiro obstáculo: drop de logs
@@ -77,13 +73,14 @@
 					* Acionar suporte o mais cedo possível
 				</section>
 				<section data-markdown>
-					### Vantagens: redução de custo
+					### Vantagens
 					* Conseguimos reduzir em 1/3 o custo de ingestão de logs.
 					* Consolidação da Cloud
 					* Padronização da forma como as apps lidam com os logs
+					* Possibilidade de integração com o BigQuery
 				</section>
 				<section data-markdown>
-					### Slide Final
+					### Slide Final ?? Nao sei o que botar aqui.
 				</section>
 			</div>
 		</div>
@@ -95,6 +92,9 @@
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
+				
+				showNotes: true,
+
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
