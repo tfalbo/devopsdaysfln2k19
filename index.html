@@ -129,8 +129,9 @@
 						### Primeiro obstáculo: drop de logs
 						![Animação de um esqueleto em uma inundação com gotas caindo da parte superior](img/drop.gif)
 						Note:
-						* Passamos o conhecimento para o suporte N2 e N3, percebemos o drop de logs
-						* Suporte da Google foi acionado tardiamente
+						* Passamos o conhecimento para o suporte, percebemos o drop de logs
+						* Causa limite da API do Stackdriver
+						* O plugin da googlecloud fornece uma forma de bufferizar!
 					</section>
 					<section data-markdown>
 						## Configuração do Buffer
@@ -156,7 +157,9 @@
 						* Buffer chunk muito pequeno -> dropa logs grandes. 
 						* Muitas threads = buffer esvazia rápido. 
 						* Buffer pequeno = logs maiores que o buffer são ignorados. 
+						* O ajuste fine pareceu quase impossivel, e o suporte da Google não ajudou muito.
 						* Infelizmente ainda temos aplicações com logs longos. Essa parte precisou de ajuste fino.
+					
 					</section>
 					<section data-markdown>
 						### Monitorando com Stackdriver
