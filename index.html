@@ -26,61 +26,160 @@
 		<div class="reveal">
 			<div class="slides">
 				<section data-markdown>
-					## Migração de Logs do LogEntries para o Stackdriver
+					### Migração de Logs do LogEntries para o Stackdriver
+					
 					Thaíssa Falbo
 
 					SRE - Resultados Digitais
 
-					Slides com notas disponíveis em bit.ly/laranjapera
+					Acesse o material dessa palestra em http://bit.ly/laranjapera
+				</section>
+				<section >
+					<section data-markdown>
+						### Resultados Digitais
+						![Pŕedio da sede da RD, com seus vidros espelhados, durante o dia.](img/rd-hq.jpg)
+					</section>
+					<section data-markdown>
+						### Resultados Digitais
+						* Desenvolvimento de Software SaaS
+						* ~700 colaboradores
+						* Times de desenvolvimento distribuídos
+						* +13.000 clientes
+						* ~1.500 parceiros
+						* Escritórios no Brasil, Colômbia, Estados Unidos e México
+					</section>
 				</section>
 				<section>
-					<img data-src="img/time.jpg" alt="Na foto há 12 pessoas (4 mulheres e 8 homens) de pé brindando com champagne dentro de um escritório."/>
+					<section data-markdown>
+						### RDStation Marketing
+						![Dashboard do RDSM mostrando gráficos e tabelas](img/rdsm.jpg)
+					</section>
+					<section data-markdown>
+						### RDStation Marketing
+						* 100 mil eventos processados por minuto
+						* 5.2 bilhões de e-mails enviados
+						* 280 mil landing pages
+						* 187 milhões de novos leads
+						* 150 mil fluxos de automação
+						* 50 bilhões de eventos (abertura, clique, etc) disponibilizados em tempo real na tela de análise de emails.
+					</section>
 				</section>
 				<section data-markdown>
-					## Situação anterior
-					* LogEntries com limite de 4Tb que sempre estourava no fim do mês
-					* Aplicações fora do kubernetes que logavam hard-coded
-					* Logs quebrados excediam o limite da quota
-					Note: Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit »S« on your keyboard).
+					### Nosso Time
+					![Nesta foto há 9 pessoas(3 mulheres e 6 homens) posando com a Lagoa de Conceição ao fundo. Um dos homens está agachado em frente ao resto do grupo que está de pé](img/time.jpg)
 				</section>
 				<section data-markdown>
-					## Consolidação da Cloud
-					* Listar serviços externos que usávamos
-					* Consolidamos a infra na Google Cloud
-					* Algumas aplicações ainda estavam no Heroku e AWS
+					### Tecnologias que Usamos
+					![Imagem com diversas tecnologias usadas na RD: GitHub, Ruby, Rails, Golang, React, Redux, CircleCI, CodeClimate, slack, HUBot, Spinnaker,Jenkins, MongoDB, Redis, ElasticSearch, PostgreSQL, GoogleCloud, AWS, Stackdriver, Datadog, FluentD, Nginx, Kubernetes, Heroku](img/tecnologias.png)
+					Note: Imagem com diversas tecnologias usadas na RD: GitHub, Ruby, Rails, Golang, React, Redux, CircleCI, CodeClimate, slack, HUBot, Spinnaker,Jenkins, MongoDB, Redis, ElasticSearch, PostgreSQL, GoogleCloud, AWS, Stackdriver, Datadog, FluentD, Nginx, Kubernetes, Heroku
+				</section>
+				<section>
+					<section data-markdown># Desafios</section>
+					
+					
+					<section data-markdown>
+						### Consolidação da Cloud
+						![](img/migracao.png)
+						Note:
+						* Consolidamos a infra na Google Cloud através de migrações
+						* De partes do sistema para o GKE
+						* Bases relacionais e não relacionais para o Google Cloud
+						* Padronização do processo de deploy
+						* Monitoramento (de ter várias ferramentas para passar para várias)
+					</section>
+					<section data-markdown>
+						### Números (atualizar!!!)
+						* +12 TB de dados movidos
+						* 3 ambientes
+						* +110 instâncias
+						* +4TB de logs por mês
+					</section>
+					<section data-markdown>
+							### Situação dos Logs
+							![Alerta de limitação do LogEntries, mostrando que excedemos a cota de 4Tb mensais](img/limite.png)
+							Note:
+							* LogEntries com limite de 4Tb que sempre estourava no fim do mês e pagávamos excedente
+							* Aplicações fora do kubernetes que logavam hard-coded
+							* Logs quebrados ajudavam a exceder o limite da quota, além de atrapalhar o fluxo de processos internos
+						</section>
+				</section>
+
+				<section>
+				<section data-markdown># Solução</section>
+
+					<section data-markdown>
+						### Arquitetura com Kubernetes
+						Note:
+						* FluentD customizado ocupando um namespace do cluster
+						* Plugin LogEntries
+						* Plugin Google Stackdriver adicionado, mantendo dois destinos
+						* Não usamos a FluentD da Google para poder ser mais customizável.
+					</section>
+					<section data-markdown>
+						### Logs no Google Stackdriver!
+						![Painel de logs, com um campo de busca e seus respectivos resultados](img/sdlog.png)
+						Note:
+						* Out teach feito para os devs
+						* Anunciada a data de encerramento do LogEntries.
+						* Fui focar em outras coisas.
+					</section>
+					<section data-markdown>
+						### Primeiro obstáculo: drop de logs
+						![Animação de um esqueleto em uma inundação com gotas caindo da parte superior](img/drop.gif)
+						Note:
+						* Passamos o conhecimento para o suporte N2 e N3, percebemos o drop de logs
+						* Suporte da Google foi acionado tardiamente
+					</section>
+					<section data-markdown>
+						## Configuração do Buffer
+						```
+						Código aqui
+						```
+						Note:
+						* Corrigimos o drop com o buffer, mas precisamos de ajustes finos. Basicamente temos dois parâmetros a definir, o tamanho do buffer_chunk e o número de threads, há que ter cuidado com a limitação da API do Stackdriver (5MB). Buffer chunk muito pequeno -> dropa logs grandes. Muitas threads = buffer esvazia rápido. Buffer pequeno = logs maiores que o buffer são ignorados. Infelizmente ainda temos aplicações com logs longos. Essa parte precisou de ajuste fino.
+					</section>
+					<section data-markdown>
+						### Monitorando com Stackdriver
+						![Dashboard de monitoramento com gráficos](img/sdmon.png)
+					</section>
+					<section data-markdown>
+						### Monitorando com Prometheus
+						![Dashboard de monitoramento com gráficos](img/prometheus.png)
+
+					</section>
+					<section data-markdown>
+						### Segundo obstáculo: encerramento do LogEntries
+						![Animação de uma mãozinha desplugando uma tomada](img/unplug.gif)
+						Note:
+						* A conta do LogEntries foi encerrada um mês antes do previsto, porém o Stackdriver segurou a demanda de uso
+						* Precisamos ajudar os devs e o suporte n2 e n3
+					</section>
+				</section>
+				<section>
+					<section data-markdown>
+						# Resultados (melhorar essa parte)
+					</section>
+					<section data-markdown>
+						### Pontos positivos
+						* Conseguimos reduzir em 1/3 o custo de ingestão de logs.
+						* Consolidação da Cloud
+						* Padronização da forma como as apps lidam com os logs
+						* Possibilidade de integração com o BigQuery
+						* Integração entre times
+					</section>
+					<section data-markdown>
+							### Aprendizados
+							* Envolver usuários o mais cedo possível
+							* Acionar provedor o mais cedo possível
+					</section>
 				</section>
 				<section data-markdown>
-					## Arquitetura com Kubernetes
-					* FluentD customizado ocupando um namespace do cluster
-					* Plugin LogEntries
-					* Plugin Google Stackdriver adicionado, mantendo dois destinos
-					Note: Não usamos a FluentD da Google para poder ser mais customizável.
-				</section>
-				<section data-markdown>
-					## Primeiro obstáculo: drop de logs
-					* Passamos o conhecimento para o suporte N2 e N3, percebemos o drop de logs
-					* Suporte da Google foi acionado tardiamente
-					* Corrigimos o drop com o buffer, mas precisamos de ajustes finos
-				</section>
-				<section data-markdown>
-					## Segundo obstáculo: encerramento do LogEntries
-					* A conta do LogEntries foi encerrada antes do previsto, porém o Stackdriver segurou a demanda
-					* Precisamos ajudar os devs e o suporte n2 e n3
-				</section>
-				<section data-markdown>
-					### Aprendizados
-					* Envolver usuários o mais cedo possível
-					* Acionar suporte o mais cedo possível
-				</section>
-				<section data-markdown>
-					### Vantagens
-					* Conseguimos reduzir em 1/3 o custo de ingestão de logs.
-					* Consolidação da Cloud
-					* Padronização da forma como as apps lidam com os logs
-					* Possibilidade de integração com o BigQuery
-				</section>
-				<section data-markdown>
-					### Slide Final ?? Nao sei o que botar aqui.
+					Acesse o material dessa palestra em http://bit.ly/laranjapera
+
+					Estamos contratando! Veja vagas em https://resultadosdigitais.com.br/trabalhe-conosco/
+
+					Meus contatos estão em http://www.thaissa.me
+
 				</section>
 			</div>
 		</div>
@@ -93,7 +192,7 @@
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
 				
-				showNotes: true,
+				showNotes: false,
 
 				dependencies: [
 					{ src: 'plugin/markdown/marked.js' },

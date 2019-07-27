@@ -269,6 +269,3 @@ body {
 @media print {
   .backgrounds {
     background-color: #364a65; } }
-
-.reveal p {
-  text-align: left; }
