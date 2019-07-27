@@ -133,10 +133,28 @@
 					<section data-markdown>
 						## Configuração do Buffer
 						```
-						Código aqui
+						buffer_chunk_limit 1M
+
+						flush_interval 5s
+
+						disable_retry_limit false
+
+						retry_limit 3
+
+						retry_wait 10
+
+						max_retry_wait 300
+
+						num_threads 4
 						```
 						Note:
-						* Corrigimos o drop com o buffer, mas precisamos de ajustes finos. Basicamente temos dois parâmetros a definir, o tamanho do buffer_chunk e o número de threads, há que ter cuidado com a limitação da API do Stackdriver (5MB). Buffer chunk muito pequeno -> dropa logs grandes. Muitas threads = buffer esvazia rápido. Buffer pequeno = logs maiores que o buffer são ignorados. Infelizmente ainda temos aplicações com logs longos. Essa parte precisou de ajuste fino.
+						* Corrigimos o drop com o buffer, mas precisamos de ajustes finos. 
+						* Basicamente temos dois parâmetros a definir, o tamanho do buffer_chunk e o número de threads.
+						* Há que ter cuidado com a limitação da API do Stackdriver (5MB). 
+						* Buffer chunk muito pequeno -> dropa logs grandes. 
+						* Muitas threads = buffer esvazia rápido. 
+						* Buffer pequeno = logs maiores que o buffer são ignorados. 
+						* Infelizmente ainda temos aplicações com logs longos. Essa parte precisou de ajuste fino.
 					</section>
 					<section data-markdown>
 						### Monitorando com Stackdriver
